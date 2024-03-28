@@ -4,9 +4,6 @@
     <string name="retry">Retry</string>
     <string name="clear">Clear</string>
     <string name="n_a">N/A</string>
-    <string name="genders">Genders: %1$s</string>
-    <string name="rating">Rating: %1$s</string>
-    <string name="address">Address: %1$s</string>
     <string name="no_bathroom_data_to_display">No Bathroom Data To Display</string>
     <string name="reload">Reload</string>
     <string name="operating_hours">Operating Hours</string>
@@ -17,4 +14,7 @@
     <string name="no_map_app_on_device">No map app detected on this device, please download Google Maps to use this functionality</string>
     <string name="back_icon">Back Icon</string>
     <string name="bathroom_details">Bathroom Details</string>
+    <string name="genders">Genders</string>
+    <string name="rating">Rating</string>
+    <string name="address">Address</string>
 </resources>

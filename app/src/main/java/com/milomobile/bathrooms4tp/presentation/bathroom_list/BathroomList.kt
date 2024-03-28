@@ -1,7 +1,6 @@
 package com.milomobile.bathrooms4tp.presentation.bathroom_list
 
 import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -29,6 +28,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.milomobile.bathrooms4tp.R
 import com.milomobile.bathrooms4tp.data.model.bathroom_models.Bathroom
 import com.milomobile.bathrooms4tp.data.model.bathroom_models.Bathrooms
@@ -36,6 +36,7 @@ import com.milomobile.bathrooms4tp.data.model.bathroom_models.capitalizeGender
 import com.milomobile.bathrooms4tp.data.model.bathroom_models.mockBathroom
 import com.milomobile.bathrooms4tp.presentation.base.base_screen.BaseScreen
 import com.milomobile.bathrooms4tp.presentation.base.mapErrorHandling
+import com.milomobile.bathrooms4tp.presentation.bathroom_list.components.BathroomProperties
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -94,9 +95,11 @@ fun Bathrooms(
             Text(
                 modifier = Modifier
                     .background(Color.White)
+                    .padding(vertical = 16.dp)
                     .fillMaxWidth(),
                 text = stringResource(id = R.string.app_name),
-                textAlign = TextAlign.Center
+                textAlign = TextAlign.Center,
+                fontSize = 24.sp
             )
         }
         items(items = bathrooms) {
@@ -136,19 +139,28 @@ fun BathroomListItem(bathroom: Bathroom, onClick: () -> Unit) {
             .clickable { onClick() }
             .padding(16.dp)
     ) {
-        Text(text = stringResource(R.string.address, bathroom.address.street))
+        BathroomProperties(
+            asRow = true,
+            label = stringResource(id = R.string.address),
+            data = bathroom.address.street,
+        )
+        
         Spacer(modifier = Modifier.height(16.dp))
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Text(
-                text = stringResource(
-                    R.string.genders,
-                    bathroom.capitalizeGender() ?: stringResource(R.string.n_a)
-                )
+            BathroomProperties(
+                asRow = true,
+                label = stringResource(id = R.string.genders),
+                data = bathroom.capitalizeGender() ?: stringResource(R.string.n_a),
             )
-            Text(text = stringResource(R.string.rating, bathroom.roundedRating))
+
+            BathroomProperties(
+                asRow = true,
+                label = stringResource(id = R.string.rating),
+                data = bathroom.roundedRating.toString(),
+            )
         }
     }
 }
