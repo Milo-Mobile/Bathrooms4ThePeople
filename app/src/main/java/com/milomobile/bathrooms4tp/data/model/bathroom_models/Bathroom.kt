@@ -35,9 +35,6 @@ fun Int.mapIndexToDayOfWeek(context: Context) =
 fun Bathroom.capitalizeGender() =
     this.genders?.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.ROOT) else it.toString() }
 
-fun Address.mapAddress() =
-    "${this.street}, ${this.city}, ${this.state}"
-
 fun mockBathroom() = Bathroom(
     address = Address(
         street = "5th Avenue",

@@ -46,6 +46,9 @@ import com.milomobile.bathrooms4tp.data.model.bathroom_models.mapAddress
 import com.milomobile.bathrooms4tp.data.model.bathroom_models.mockBathroom
 import com.milomobile.bathrooms4tp.data.repository.BathroomRepositoryImpl.Companion.GOOGLE_MAPS_PACKAGE
 import com.milomobile.bathrooms4tp.data.repository.BathroomRepositoryImpl.Companion.GOOGLE_MAPS_QUERY
+import com.milomobile.bathrooms4tp.presentation.bathroom_list.components.BathroomHours
+import com.milomobile.bathrooms4tp.presentation.bathroom_list.components.BathroomImage
+import com.milomobile.bathrooms4tp.presentation.bathroom_list.components.BathroomNotes
 import com.milomobile.bathrooms4tp.presentation.bathroom_list.components.BathroomProperties
 
 @Composable
@@ -166,74 +169,6 @@ fun MapsButton(
         )
     }
     Spacer(modifier = Modifier.height(if (!isEnabled) 12.dp else 24.dp ))
-}
-
-@Composable
-fun BathroomHours(
-    operatingHours: OperatingHours
-) {
-    Column(
-        modifier = Modifier
-            .padding(vertical = 24.dp)
-    ) {
-        BathroomProperties(
-            label = stringResource(R.string.operating_hours),
-            data = operatingHours,
-            verticalSpacerHeight = 8.dp
-        )
-    }
-}
-
-@Composable
-fun BathroomImage(
-    imageUrl: String
-) {
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 24.dp),
-    ) {
-        val contentScale = remember {
-            mutableStateOf(ContentScale.Fit)
-        }
-        val imageLoadingFailed = remember {
-            mutableStateOf(false)
-        }
-        AsyncImage(
-            modifier = Modifier.fillMaxWidth(),
-            model = imageUrl,
-            contentScale = contentScale.value,
-            contentDescription = "Bathroom Image",
-            error = painterResource(id = R.drawable.baseline_error_24),
-            placeholder = painterResource(id = R.drawable.ic_launcher_foreground),
-            onError = {
-                contentScale.value = ContentScale.Fit
-                imageLoadingFailed.value = true
-            },
-            onSuccess = {
-                contentScale.value = ContentScale.FillWidth
-            }
-        )
-
-        if (imageLoadingFailed.value) {
-            Text(text = stringResource(R.string.unable_to_load_bathroom_images))
-        }
-    }
-}
-
-@Composable
-fun BathroomNotes(
-    notes: String
-) {
-    BathroomProperties(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 24.dp),
-        asRow = false,
-        label = stringResource(R.string.bathroom_notes),
-        data = notes,
-        spacing = 16.dp,
-    )
 }
 
 @Preview

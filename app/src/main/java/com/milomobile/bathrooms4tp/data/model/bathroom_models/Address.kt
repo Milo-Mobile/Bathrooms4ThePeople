@@ -12,3 +12,6 @@ typealias Latitude = Double
 typealias Longitude = Double
 
 typealias Coordinates = Pair<Latitude, Longitude>
+
+fun Address.mapAddress() =
+    "${this.street}, ${this.city}, ${this.state}"
