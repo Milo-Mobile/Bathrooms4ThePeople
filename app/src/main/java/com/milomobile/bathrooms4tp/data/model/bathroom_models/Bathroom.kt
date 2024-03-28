@@ -3,6 +3,7 @@ package com.milomobile.bathrooms4tp.data.model.bathroom_models
 import android.content.Context
 import com.milomobile.bathrooms4tp.R
 import java.util.Locale
+import kotlin.math.round
 
 typealias Bathrooms = List<Bathroom>
 
@@ -13,7 +14,9 @@ data class Bathroom(
     val rating: Double = 0.0,
     val imageUrl: String? = null,
     val notes: String? = null,
-)
+) {
+    val roundedRating = round(rating * 10) / 10
+}
 
 typealias OperatingHours =  List<Pair<String, String>?>
 
@@ -32,6 +35,8 @@ fun Int.mapIndexToDayOfWeek(context: Context) =
 fun Bathroom.capitalizeGender() =
     this.genders?.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.ROOT) else it.toString() }
 
+fun Address.mapAddress() =
+    "${this.street}, ${this.city}, ${this.state}"
 
 fun mockBathroom() = Bathroom(
     address = Address(

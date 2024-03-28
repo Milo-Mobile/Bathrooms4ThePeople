@@ -1,5 +1,7 @@
 package com.milomobile.bathrooms4tp.presentation.bathroom_list
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -54,22 +56,27 @@ fun BathroomList(
             viewModel.onClearUIError()
         }
     ) {
-        when (state.selectedBathroom) {//Make this AnimatedContent
-            null -> {
-                when (state.bathrooms.isEmpty()) {
-                    true -> NoBathroomData(onRetryLoad = viewModel::loadBathrooms)
-                    false -> Bathrooms(
-                        bathrooms = state.bathrooms,
-                        onBathroomItemSelected = viewModel::onBathroomItemSelected
+        AnimatedContent(
+            targetState = state.selectedBathroom,
+            label = "Bathroom List/Detail"
+        ) { selectedBathroom ->
+            when (selectedBathroom) {
+                null -> {
+                    when (state.bathrooms.isEmpty()) {
+                        true -> NoBathroomData(onRetryLoad = viewModel::loadBathrooms)
+                        false -> Bathrooms(
+                            bathrooms = state.bathrooms,
+                            onBathroomItemSelected = viewModel::onBathroomItemSelected
+                        )
+                    }
+                }
+
+                else -> {
+                    BathroomDetails(
+                        bathroom = selectedBathroom,
+                        onClose = viewModel::onBathroomDetailsClosed
                     )
                 }
-            }
-
-            else -> {
-                BathroomDetails(
-                    bathroom = state.selectedBathroom,
-                    onClose = viewModel::onBathroomDetailsClosed
-                )
             }
         }
     }
@@ -141,7 +148,7 @@ fun BathroomListItem(bathroom: Bathroom, onClick: () -> Unit) {
                     bathroom.capitalizeGender() ?: stringResource(R.string.n_a)
                 )
             )
-            Text(text = stringResource(R.string.rating, bathroom.rating))
+            Text(text = stringResource(R.string.rating, bathroom.roundedRating))
         }
     }
 }

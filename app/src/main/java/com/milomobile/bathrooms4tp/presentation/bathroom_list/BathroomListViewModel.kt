@@ -24,8 +24,9 @@ class BathroomListViewModel(
         viewModelScope.launch {
             bathroomRepository.getBathrooms().onLeft {
                 state.value = state.value.copy(uiError = it)
-            }.onRight {
-                state.value = state.value.copy(bathrooms = it)
+            }.onRight { bathrooms ->
+                state.value =
+                    state.value.copy(bathrooms = bathrooms.sortedByDescending { it.rating })
             }
         }
         setLoadingState(false)

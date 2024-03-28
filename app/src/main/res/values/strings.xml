@@ -11,4 +11,10 @@
     <string name="reload">Reload</string>
     <string name="operating_hours">Operating Hours</string>
     <string name="bathroom_notes">Bathroom Notes</string>
+    <string name="unable_to_load_bathroom_images">Unable to load bathroom images</string>
+    <string name="open_in_maps">Open in Maps</string>
+    <string name="map_pin_icon">Map Pin Icon</string>
+    <string name="no_map_app_on_device">No map app detected on this device, please download Google Maps to use this functionality</string>
+    <string name="back_icon">Back Icon</string>
+    <string name="bathroom_details">Bathroom Details</string>
 </resources>
