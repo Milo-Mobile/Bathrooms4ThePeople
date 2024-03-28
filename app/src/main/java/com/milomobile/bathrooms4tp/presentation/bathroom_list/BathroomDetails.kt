@@ -43,10 +43,10 @@ import com.milomobile.bathrooms4tp.data.model.bathroom_models.Bathroom
 import com.milomobile.bathrooms4tp.data.model.bathroom_models.OperatingHours
 import com.milomobile.bathrooms4tp.data.model.bathroom_models.capitalizeGender
 import com.milomobile.bathrooms4tp.data.model.bathroom_models.mapAddress
-import com.milomobile.bathrooms4tp.data.model.bathroom_models.mapIndexToDayOfWeek
 import com.milomobile.bathrooms4tp.data.model.bathroom_models.mockBathroom
 import com.milomobile.bathrooms4tp.data.repository.BathroomRepositoryImpl.Companion.GOOGLE_MAPS_PACKAGE
 import com.milomobile.bathrooms4tp.data.repository.BathroomRepositoryImpl.Companion.GOOGLE_MAPS_QUERY
+import com.milomobile.bathrooms4tp.presentation.bathroom_list.components.BathroomProperties
 
 @Composable
 fun BathroomDetails(
@@ -86,27 +86,28 @@ fun BathroomDetails(
                 .padding(horizontal = 16.dp)
         ) {
             Spacer(modifier = Modifier.height(42.dp))
-            Text(text = stringResource(R.string.address, bathroom.address.street))
-            Spacer(modifier = Modifier.height(8.dp))
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-            ) {
-                Text(
-                    text = "${bathroom.address.city}, ${bathroom.address.state} - ${bathroom.address.zipcode}"
-                )
-            }
+            BathroomProperties(
+                asRow = false,
+                label = stringResource(R.string.address),
+                data = "${bathroom.address.street}\n${bathroom.address.city}, ${bathroom.address.state} - ${bathroom.address.zipcode}",
+                spacing = 4.dp,
+            )
             Spacer(modifier = Modifier.height(24.dp))
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Text(
-                    text = stringResource(
-                        R.string.genders,
-                        bathroom.capitalizeGender() ?: stringResource(R.string.n_a)
-                    )
+                BathroomProperties(
+                    asRow = false,
+                    label = stringResource(R.string.genders),
+                    data = bathroom.capitalizeGender() ?: stringResource(R.string.n_a),
                 )
-                Text(text = stringResource(R.string.rating, bathroom.roundedRating))
+
+                BathroomProperties(
+                    asRow = false,
+                    label = stringResource(R.string.rating),
+                    data = bathroom.roundedRating.toString(),
+                )
             }
 
             MapsButton(
@@ -171,24 +172,15 @@ fun MapsButton(
 fun BathroomHours(
     operatingHours: OperatingHours
 ) {
-    val context = LocalContext.current
     Column(
         modifier = Modifier
             .padding(vertical = 24.dp)
     ) {
-        Text(text = stringResource(R.string.operating_hours), fontSize = 20.sp, fontWeight = FontWeight.SemiBold)
-        operatingHours.forEachIndexed { index, pair ->
-            Row(
-                modifier = Modifier.padding(vertical = 6.dp)
-            ) {
-                Text(text = index.mapIndexToDayOfWeek(context = context))
-                Spacer(modifier = Modifier.weight(1f))
-
-                pair?.let {
-                    Text(text = "${pair.first} - ${pair.second}")
-                } ?: Text(text = stringResource(id = R.string.n_a))
-            }
-        }
+        BathroomProperties(
+            label = stringResource(R.string.operating_hours),
+            data = operatingHours,
+            verticalSpacerHeight = 8.dp
+        )
     }
 }
 
@@ -233,15 +225,15 @@ fun BathroomImage(
 fun BathroomNotes(
     notes: String
 ) {
-    Column(
+    BathroomProperties(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 24.dp)
-    ) {
-        Text(text = stringResource(R.string.bathroom_notes), fontSize = 20.sp, fontWeight = FontWeight.SemiBold)
-        Spacer(modifier = Modifier.height(16.dp))
-        Text(text = notes)
-    }
+            .padding(vertical = 24.dp),
+        asRow = false,
+        label = stringResource(R.string.bathroom_notes),
+        data = notes,
+        spacing = 16.dp,
+    )
 }
 
 @Preview
