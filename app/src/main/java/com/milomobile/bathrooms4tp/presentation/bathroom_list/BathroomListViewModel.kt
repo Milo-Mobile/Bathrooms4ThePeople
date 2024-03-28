@@ -19,7 +19,7 @@ class BathroomListViewModel(
         loadBathrooms()
     }
 
-    private fun loadBathrooms() {
+    fun loadBathrooms() {
         setLoadingState(true)
         viewModelScope.launch {
             bathroomRepository.getBathrooms().onLeft {
@@ -40,6 +40,10 @@ class BathroomListViewModel(
     }
 
     fun onBathroomItemSelected(selectedBathroom: Bathroom) {
-        baseLog(message = "Selected bathroom: ${selectedBathroom.address.street}")
+        state.value = state.value.copy(selectedBathroom = selectedBathroom)
+    }
+
+    fun onBathroomDetailsClosed() {
+        state.value = state.value.copy(selectedBathroom = null)
     }
 }
