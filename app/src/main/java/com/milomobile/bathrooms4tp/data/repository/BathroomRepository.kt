@@ -18,6 +18,9 @@ class BathroomRepositoryImpl(
 
     companion object {
         const val BATHROOM_COLLECTION = "bathrooms"
+
+        const val GOOGLE_MAPS_PACKAGE = "com.google.android.apps.maps"
+        const val GOOGLE_MAPS_QUERY = "geo:0,0?q="
     }
 
     override suspend fun getBathrooms() : Either<QueryError, Bathrooms> =
