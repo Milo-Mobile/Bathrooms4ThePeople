@@ -58,6 +58,8 @@ class BathroomAdapter : FirestoreAdapter<Bathroom> {
     }
 
     override fun modelToDocument(model: Bathroom): Map<String, Any> {
+        //Apparently CloudFirestore supports writing documents with custom classes
+        // Investigate this later
         TODO("Not yet implemented")
     }
 }
