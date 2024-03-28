@@ -1,5 +1,7 @@
 package com.milomobile.bathrooms4tp.data.model.bathroom_models
 
+import android.content.Context
+import com.milomobile.bathrooms4tp.R
 import java.util.Locale
 
 typealias Bathrooms = List<Bathroom>
@@ -15,9 +17,17 @@ data class Bathroom(
 
 typealias OperatingHours =  List<Pair<String, String>?>
 
-enum class DayOfWeek {//Let's map this via index position
-    Sunday, Monday, Tuesday, Wednesday, Thursday, Friday, Saturday
-}
+fun Int.mapIndexToDayOfWeek(context: Context) =
+    when (this) {
+        0 -> "Sunday"
+        1 -> "Monday"
+        2 -> "Tuesday"
+        3 -> "Wednesday"
+        4 -> "Thursday"
+        5 -> "Friday"
+        6 -> "Saturday"
+        else -> context.getString(R.string.n_a)
+    }
 
 fun Bathroom.capitalizeGender() =
     this.genders?.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.ROOT) else it.toString() }

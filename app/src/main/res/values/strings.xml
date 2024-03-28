@@ -7,4 +7,8 @@
     <string name="genders">Genders: %1$s</string>
     <string name="rating">Rating: %1$s</string>
     <string name="address">Address: %1$s</string>
+    <string name="no_bathroom_data_to_display">No Bathroom Data To Display</string>
+    <string name="reload">Reload</string>
+    <string name="operating_hours">Operating Hours</string>
+    <string name="bathroom_notes">Bathroom Notes</string>
 </resources>

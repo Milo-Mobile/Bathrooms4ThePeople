@@ -83,6 +83,9 @@ dependencies {
     implementation(libs.ktor.core)
     implementation(libs.ktor.cio)
 
+    //Coil
+    implementation(libs.coil)
+
     testImplementation(libs.junit)
 
     testImplementation(libs.koin.junit4)
