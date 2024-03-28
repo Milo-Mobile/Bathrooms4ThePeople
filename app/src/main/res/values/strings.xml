@@ -3,4 +3,8 @@
     <string name="unknown_error_occurred">Unknown Error Occurred</string>
     <string name="retry">Retry</string>
     <string name="clear">Clear</string>
+    <string name="n_a">N/A</string>
+    <string name="genders">Genders: %1$s</string>
+    <string name="rating">Rating: %1$s</string>
+    <string name="address">Address: %1$s</string>
 </resources>
