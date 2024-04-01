@@ -8,5 +8,5 @@ data class BathroomListState(
     val bathrooms: Bathrooms = listOf(),
     val selectedBathroom: Bathroom? = null,
     val uiError: BaseError? = null,
-    val loading: Boolean = false,
+    val loading: Boolean = true,
 )

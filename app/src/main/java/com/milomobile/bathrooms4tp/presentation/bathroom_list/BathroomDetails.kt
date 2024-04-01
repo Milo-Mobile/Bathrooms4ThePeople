@@ -133,7 +133,9 @@ fun BathroomDetails(
                 if (imageUrlNotEmpty) { BathroomImage(imageUrl = bathroom.imageUrl) }
             }
 
-            BathroomHours(operatingHours = bathroom.operatingHours)
+            bathroom.operatingHours?.let {
+                BathroomHours(operatingHours = bathroom.operatingHours)
+            }
 
             bathroom.notes?.isNotEmpty()?.let {notesNotEmpty ->
                 if (notesNotEmpty) { BathroomNotes(notes = bathroom.notes) }

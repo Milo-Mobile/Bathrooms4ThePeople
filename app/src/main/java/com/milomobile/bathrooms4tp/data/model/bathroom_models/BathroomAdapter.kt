@@ -1,7 +1,10 @@
 package com.milomobile.bathrooms4tp.data.model.bathroom_models
 
+import arrow.core.Either
 import com.google.firebase.firestore.DocumentSnapshot
 import com.milomobile.bathrooms4tp.data.adapter.FirestoreAdapter
+import com.milomobile.bathrooms4tp.data.exceptions.BathroomNecessaryDataMissingException
+import com.milomobile.bathrooms4tp.presentation.base.BaseError
 import com.milomobile.bathrooms4tp.util.baseLog
 
 class BathroomAdapter : FirestoreAdapter<Bathroom> {
@@ -13,10 +16,10 @@ class BathroomAdapter : FirestoreAdapter<Bathroom> {
         const val OPEN_FIELD = "open"
         const val CLOSE_FIELD = "close"
     }
-    override fun documentToModel(document: DocumentSnapshot): Bathroom? {
-        return try {
-            val rawAddress = document.get(Bathroom::address.name) as Map<*, *>
-            val rawCoordinates = rawAddress[Address::coordinates.name] as Map<*, *>
+    override fun documentToModel(document: DocumentSnapshot): Either<BaseError.AdapterError, Bathroom?> =
+        Either.catch {
+            val rawAddress = document.get(Bathroom::address.name) as? Map<*, *>
+            val rawCoordinates = rawAddress?.get(Address::coordinates.name) as? Map<*, *>
             val rawOperatingHours = document.get(Bathroom::operatingHours.name) as Map<*, *>
             val days = rawOperatingHours[DAYS_FIELD] as? List<*>
             val operatingHours = days?.map { day ->
@@ -32,30 +35,42 @@ class BathroomAdapter : FirestoreAdapter<Bathroom> {
                 }
             } ?: listOf()
 
+            val address = Address(
+                street = rawAddress?.get(Address::street.name) as? String
+                    ?: throw BathroomNecessaryDataMissingException("Missing street property of bathroom"),
+                city = rawAddress[Address::city.name] as? String
+                    ?: throw BathroomNecessaryDataMissingException("Missing city property of bathroom"),
+                state = rawAddress[Address::state.name] as? String
+                    ?: throw BathroomNecessaryDataMissingException("Missing state property of bathroom"),
+                zipcode = (rawAddress[Address::zipcode.name] as? Long)
+                    ?: throw BathroomNecessaryDataMissingException("Missing zipcode property of bathroom"),
+                coordinates = Coordinates(
+                    first = rawCoordinates?.get(LATITUDE_FIELD) as? Double,
+                    second = rawCoordinates?.get(LONGITUDE_FIELD) as? Double
+                )
+            )
 
             Bathroom(
-                address = Address(
-                    street = rawAddress[Address::street.name] as? String ?: "",
-                    city = rawAddress[Address::city.name] as? String ?: "",
-                    state = rawAddress[Address::state.name] as? String ?: "",
-                    zipcode = (rawAddress[Address::zipcode.name] as? Long) ?: 0,
-                    coordinates = Coordinates(
-                        first = rawCoordinates[LATITUDE_FIELD] as? Double ?: 0.0,
-                        second = rawCoordinates[LONGITUDE_FIELD] as? Double ?: 0.0
-                    )
-                ),
+                address = address,
                 operatingHours = operatingHours,
                 genders = document.getString(Bathroom::genders.name),
-                rating = document.getDouble(Bathroom::rating.name) ?: 0.0,
+                rating = document.getDouble(Bathroom::rating.name),
                 imageUrl = document.getString(Bathroom::imageUrl.name),
                 notes = document.getString(Bathroom::notes.name)
             )
-        } catch (e: Exception) {
+        }.mapLeft {
             baseLog(message = "Exception caught when adapting document to bathroom model")
-            baseLog(message = "Exception message: ${e.message}")
-            null
+            baseLog(message = "Exception message: ${it.message}")
+            when (it) {
+                is BathroomNecessaryDataMissingException -> {
+                    BaseError.AdapterError.NecessaryDataMissing(it.message)
+                }
+                is ClassCastException -> {
+                    BaseError.AdapterError.UnexpectedTypeCast(it.message ?: "Unable to cast field to expected data type")
+                }
+                else -> BaseError.AdapterError.UnknownExceptionCaught(it.message ?: "Unknown exception caught")
+            }
         }
-    }
 
     override fun modelToDocument(model: Bathroom): Map<String, Any> {
         //Apparently CloudFirestore supports writing documents with custom classes

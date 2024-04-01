@@ -22,12 +22,13 @@ class BathroomListViewModel(
     fun loadBathrooms() {
         setLoadingState(true)
         viewModelScope.launch {
-            bathroomRepository.getBathrooms().onLeft {
-                state.value = state.value.copy(uiError = it)
-            }.onRight { bathrooms ->
-                state.value =
-                    state.value.copy(bathrooms = bathrooms.sortedByDescending { it.rating })
-            }
+            bathroomRepository.getBathrooms()
+                .onLeft {
+                    state.value = state.value.copy(uiError = it)
+                }.onRight { bathrooms ->
+                    state.value =
+                        state.value.copy(bathrooms = bathrooms.sortedByDescending { it.rating })
+                }
         }
         setLoadingState(false)
     }

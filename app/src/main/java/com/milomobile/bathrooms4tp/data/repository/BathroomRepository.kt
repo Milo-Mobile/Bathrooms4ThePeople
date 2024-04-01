@@ -1,14 +1,15 @@
 package com.milomobile.bathrooms4tp.data.repository
 
 import arrow.core.Either
+import arrow.core.getOrElse
 import com.google.firebase.firestore.FirebaseFirestore
 import com.milomobile.bathrooms4tp.data.model.bathroom_models.BathroomAdapter
 import com.milomobile.bathrooms4tp.data.model.bathroom_models.Bathrooms
-import com.milomobile.bathrooms4tp.presentation.base.QueryError
+import com.milomobile.bathrooms4tp.presentation.base.BaseError
 import kotlinx.coroutines.tasks.await
 
 interface BathroomRepository {
-    suspend fun getBathrooms() : Either<QueryError, Bathrooms>
+    suspend fun getBathrooms() : Either<BaseError, Bathrooms>
     suspend fun submitRating()
 }
 
@@ -23,14 +24,31 @@ class BathroomRepositoryImpl(
         const val GOOGLE_MAPS_QUERY = "geo:0,0?q="
     }
 
-    override suspend fun getBathrooms() : Either<QueryError, Bathrooms> =
+    override suspend fun getBathrooms() : Either<BaseError, Bathrooms> =
         Either.catch {
             val result = firestore.collection(BATHROOM_COLLECTION).get().await()
-            result.documents.mapNotNull {
-                BathroomAdapter().documentToModel(it)
+            result.documents.mapNotNull { documentSnapshot ->
+                BathroomAdapter().documentToModel(documentSnapshot).getOrElse { adapterError ->
+                    when (adapterError) {
+                        is BaseError.AdapterError.NecessaryDataMissing -> {
+                            //TODO: Report the error message to analytics
+                            null
+                        }
+                        is BaseError.AdapterError.UnexpectedTypeCast -> {
+                            //TODO: Report the error message to analytics
+                            null
+                        }
+                        is BaseError.AdapterError.UnknownExceptionCaught -> {
+                            //TODO: Report the error message to analytics
+                            throw adapterError
+                        }
+                    }
+                }
             }
         }.mapLeft {
-            QueryError(it.message ?: "Failed to load story, please check internet and try again.")
+            BaseError.QueryError(
+                it.message ?: "Failed to load bathroom, please check internet and try again."
+            )
         }
 
 

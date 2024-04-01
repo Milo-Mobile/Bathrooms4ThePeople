@@ -63,7 +63,7 @@ fun BathroomList(
         ) { selectedBathroom ->
             when (selectedBathroom) {
                 null -> {
-                    when (state.bathrooms.isEmpty()) {
+                    when (state.bathrooms.isEmpty() && !state.loading) {
                         true -> NoBathroomData(onRetryLoad = viewModel::loadBathrooms)
                         false -> Bathrooms(
                             bathrooms = state.bathrooms,
