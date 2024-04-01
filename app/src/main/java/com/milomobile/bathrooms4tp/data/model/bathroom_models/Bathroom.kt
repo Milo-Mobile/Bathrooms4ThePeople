@@ -9,13 +9,13 @@ typealias Bathrooms = List<Bathroom>
 
 data class Bathroom(
     val address: Address = Address(),
-    val operatingHours: OperatingHours = listOf(),
+    val operatingHours: OperatingHours? = listOf(),
     val genders: String? = null,
-    val rating: Double = 0.0,
+    val rating: Double? = null,
     val imageUrl: String? = null,
     val notes: String? = null,
 ) {
-    val roundedRating = round(rating * 10) / 10
+    val roundedRating = rating?.let { round(rating * 10) / 10 }
 }
 
 typealias OperatingHours =  List<Pair<String, String>?>
