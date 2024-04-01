@@ -26,6 +26,7 @@ import kotlinx.coroutines.delay
 @Composable
 fun BaseScreen(
     loadingTrigger: Boolean,
+    floatingActionButton: (@Composable () -> Unit)? = null,
     errorHandling: ErrorHandling?,
     content: @Composable () -> Unit
 ) {
@@ -41,7 +42,9 @@ fun BaseScreen(
         }
     }
 
-    Scaffold {
+    Scaffold(
+        floatingActionButton = { floatingActionButton?.invoke() }
+    ) {
         Box(modifier = Modifier.padding(it)) {
             content()
 

@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsKotlinAndroid)
     alias(libs.plugins.googleServices)
+    id("com.google.devtools.ksp") version "1.9.23-1.0.19"
 }
 
 android {
@@ -60,6 +61,7 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+    implementation(libs.androidx.navigation.compose)
 
     //Kotlin
     implementation(libs.kotlin.coroutines.core)
@@ -74,6 +76,9 @@ dependencies {
 
     //Arrow
     implementation(libs.arrow.core)
+    implementation(libs.arrow.fx.coroutines)
+    implementation(libs.arrow.optics)
+    ksp(libs.arrow.optics.plugin)
 
     //Firebase
     implementation(platform(libs.firebase.bom))
@@ -85,6 +90,11 @@ dependencies {
 
     //Coil
     implementation(libs.coil)
+
+    //Location
+    implementation(libs.google.location)
+
+    implementation(libs.accompanist.permissions)
 
     testImplementation(libs.junit)
 

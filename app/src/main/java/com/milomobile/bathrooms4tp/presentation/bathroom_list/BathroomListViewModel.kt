@@ -4,12 +4,14 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.milomobile.bathrooms4tp.data.model.bathroom_models.Bathroom
 import com.milomobile.bathrooms4tp.data.repository.BathroomRepository
+import com.milomobile.bathrooms4tp.data.repository.LocationRepository
 import com.milomobile.bathrooms4tp.util.baseLog
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 
 class BathroomListViewModel(
-    private val bathroomRepository: BathroomRepository
+    private val bathroomRepository: BathroomRepository,
+    private val locationRepository: LocationRepository
 ) : ViewModel() {
 
     var state = MutableStateFlow(BathroomListState())
@@ -20,21 +22,41 @@ class BathroomListViewModel(
     }
 
     fun loadBathrooms() {
-        setLoadingState(true)
-        viewModelScope.launch {
-            bathroomRepository.getBathrooms()
-                .onLeft {
-                    state.value = state.value.copy(uiError = it)
-                }.onRight { bathrooms ->
-                    state.value =
-                        state.value.copy(bathrooms = bathrooms.sortedByDescending { it.rating })
-                }
+        //Check for permission before loading
+        state.value = state.value.copy(checkLocationPermissions = true)
+
+        if (state.value.locationPermissionGranted) {
+            setLoadingState(true)
+            viewModelScope.launch {
+                //TODO: Grab location before making query
+                locationRepository.getUserLocation()
+                //Depending on how location comes back, we will get bathrooms
+
+                bathroomRepository.getBathrooms()
+                    .onLeft {
+                        state.value = state.value.copy(uiError = it)
+                    }.onRight { bathrooms ->
+                        state.value =
+                            state.value.copy(bathrooms = bathrooms.sortedByDescending { it.rating })
+                    }
+            }
+            setLoadingState(false)
         }
-        setLoadingState(false)
     }
 
-    private fun setLoadingState(loading: Boolean) {
+    fun setLoadingState(loading: Boolean) {
         state.value = state.value.copy(loading = loading)
+    }
+
+    fun setPermissionGrantedAndLoadBathrooms() {
+        baseLog(message = "Setting permission granted and loading bathrooms")
+        setPermissionGranted(true)
+        loadBathrooms()
+    }
+
+    fun setPermissionGranted(permissionGranted: Boolean) {
+        state.value = state.value.copy(checkLocationPermissions = false)
+        state.value = state.value.copy(locationPermissionGranted = permissionGranted)
     }
 
     fun onClearUIError() {

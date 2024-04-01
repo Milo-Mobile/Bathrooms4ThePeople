@@ -7,16 +7,20 @@ junitVersion = "1.1.5"
 espressoCore = "3.5.1"
 lifecycleRuntimeKtx = "2.7.0"
 activityCompose = "1.8.2"
-composeBom = "2024.02.02"
+composeBom = "2024.03.00"
 koinBom = "3.5.4-RC1"
 kotlinCoroutines = "1.8.0"
-arrow = "1.2.3"
+arrow = "1.2.4"
 ktor = "2.3.9"
 googleServices = "4.4.1"
-firebaseBom = "32.7.4"
+firebaseBom = "32.8.0"
 coil = "2.6.0"
+googleLocationService = "21.2.0"
+accompanist = "0.18.0"
+navigationCompose = "2.7.7"
 
 [libraries]
+androidx-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
@@ -37,6 +41,11 @@ kotlin-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coro
 
 #Arrow
 arrow-core = { module = "io.arrow-kt:arrow-core", version.ref = "arrow" }
+arrow-fx-coroutines = { module = "io.arrow-kt:arrow-fx-coroutines", version.ref = "arrow" }
+arrow-optics = { module = "io.arrow-kt:arrow-optics", version.ref = "arrow" }
+#arrow-optics-compose = { module = "io.arrow-kt:arrow-optics-compose", version.ref = "arrow" }
+arrow-optics-plugin = { module = "io.arrow-kt:arrow-optics-ksp-plugin", version.ref = "arrow" }
+
 
 #Koin
 koin-bom = { module = "io.insert-koin:koin-bom", version.ref = "koinBom" }
@@ -59,7 +68,14 @@ firebase-firestore = { module = "com.google.firebase:firebase-firestore" }
 #Coil Image Loading
 coil = { module = "io.coil-kt:coil-compose", version.ref = "coil"}
 
+#Google Location Service
+google-location = { module = "com.google.android.gms:play-services-location", version.ref = "googleLocationService" }
+
+#Accompanist
+accompanist-permissions = { module = "com.google.accompanist:accompanist-permissions", version.ref = "accompanist" }
+
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
 jetbrainsKotlinAndroid = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 googleServices = { id = "com.google.gms.google-services", version.ref = "googleServices" }
+#arrowOpticsKsp = { id = "io.arrow-kt:arrow-optics-ksp-plugin", version.ref = "arrowOpticsKspPlugin" }

@@ -7,6 +7,8 @@ import com.milomobile.bathrooms4tp.presentation.base.BaseError
 data class BathroomListState(
     val bathrooms: Bathrooms = listOf(),
     val selectedBathroom: Bathroom? = null,
+    val checkLocationPermissions: Boolean = false,
+    val locationPermissionGranted: Boolean = false,
     val uiError: BaseError? = null,
     val loading: Boolean = true,
 )
