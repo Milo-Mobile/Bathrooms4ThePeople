@@ -18,11 +18,14 @@ sealed class BaseError : Throwable() {
         data class NecessaryDataMissing(override val message: String) : AdapterError(message)
         data class UnknownExceptionCaught(override val message: String) : AdapterError(message)
     }
+
+    data class LocationQueryError(override val message: String) : BaseError()
 }
 
 fun BaseError.mapErrorMessage() = when (this) {
     is BaseError.QueryError -> this.message
     is BaseError.AdapterError -> this.message
+    is BaseError.LocationQueryError -> this.message
 }
 
 fun BaseError.mapErrorHandling(context: Context, onAction: () -> Unit): ErrorHandling = when (this) {
@@ -32,6 +35,12 @@ fun BaseError.mapErrorHandling(context: Context, onAction: () -> Unit): ErrorHan
         onAction = onAction
     )
     is BaseError.AdapterError -> ErrorHandling(
+        text = this.mapErrorMessage(),
+        actionText = context.getString(R.string.clear),
+        onAction = onAction
+    )
+
+    is BaseError.LocationQueryError -> ErrorHandling(
         text = this.mapErrorMessage(),
         actionText = context.getString(R.string.clear),
         onAction = onAction

@@ -97,6 +97,9 @@ dependencies {
     //Location
     implementation(libs.google.location)
 
+    //Maps
+    implementation(libs.google.maps)
+
     implementation(libs.accompanist.permissions)
 
     testImplementation(libs.junit)

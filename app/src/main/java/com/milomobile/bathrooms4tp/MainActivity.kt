@@ -15,6 +15,7 @@ import androidx.navigation.compose.rememberNavController
 import com.milomobile.bathrooms4tp.presentation.Route
 import com.milomobile.bathrooms4tp.presentation.bathroom_list.BathroomList
 import com.milomobile.bathrooms4tp.presentation.create_bathroom.CreateBathroom
+import com.milomobile.bathrooms4tp.presentation.maps.BathroomMap
 import com.milomobile.bathrooms4tp.ui.theme.Bathrooms4ThePeopleTheme
 
 class MainActivity : ComponentActivity() {
@@ -44,6 +45,9 @@ private fun BaseNavHost(navController: NavHostController) {
         }
         composable(route = Route.CreateBathroomRoute.path) {
             CreateBathroom(navController = navController)
+        }
+        composable(route = Route.MapRoute.path) {
+            BathroomMap()
         }
     }
 }

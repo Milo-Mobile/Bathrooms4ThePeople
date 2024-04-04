@@ -20,8 +20,10 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Place
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -42,7 +44,6 @@ import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import androidx.core.content.PermissionChecker.PERMISSION_GRANTED
 import androidx.navigation.NavController
-import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.milomobile.bathrooms4tp.R
 import com.milomobile.bathrooms4tp.data.model.bathroom_models.Bathroom
 import com.milomobile.bathrooms4tp.data.model.bathroom_models.Bathrooms
@@ -171,6 +172,18 @@ fun BathroomList(
                         onClose = viewModel::onBathroomDetailsClosed
                     )
                 }
+            }
+        }
+
+        if (state.bathrooms.isNotEmpty() && !state.loading) {
+            IconButton(
+                modifier = Modifier
+                    .align(Alignment.TopStart)
+                    .padding(16.dp),
+                onClick = {
+                    navController.navigate(route = Route.MapRoute.path)
+                }) {
+                Icon(imageVector = Icons.Filled.Place, contentDescription = "Map Icon")
             }
         }
     }
