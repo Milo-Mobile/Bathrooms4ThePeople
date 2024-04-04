@@ -54,7 +54,6 @@ fun Permission(
     permissionNotAvailableContent: @Composable () -> Unit,
     content: @Composable () -> Unit,
 ) {
-    //TODO: Get permission library from Accompanist
     val permissionState = rememberPermissionState(permission)
     PermissionRequired(
         permissionState = permissionState,

@@ -99,29 +99,30 @@ class CreateBathroomViewModel(
     private suspend fun submitBathroom() {
         state = state.copy(loading = true)
         parZip(
-            { state.newBathroom.validateCriticalDataAccumulate() },//Validate data
-            { BathroomAdapter().modelToDocument(state.newBathroom) }//Map data
+            { state.newBathroom.validateCriticalDataAccumulate() },
+            { BathroomAdapter().modelToDocument(state.newBathroom) }
         ) { validBathroomData, bathroomMap ->
-            //TODO: Clean up this onRight/onLeft dance
             validBathroomData
+                .onLeft {
+                    state = state.copy(fieldErrors = it)
+                }
                 .onRight {
                     bathroomMap
+                        .onLeft {
+                            onClearFieldErrors()
+                            state = state.copy(uiError = it)
+                        }
                         .onRight {
                             bathroomRepository.submitBathroom(it)
-                                .onRight {
-                                    onClearFieldErrors()
-                                    state = state.copy(bathroomSubmittedToDatabase = true)
-                                }
                                 .onLeft { submitBathroomError ->
                                     onClearFieldErrors()
                                     state = state.copy(uiError = submitBathroomError)
                                 }
-                        }.onLeft {
-                            onClearFieldErrors()
-                            state = state.copy(uiError = it)
+                                .onRight {
+                                    onClearFieldErrors()
+                                    state = state.copy(bathroomSubmittedToDatabase = true)
+                                }
                         }
-                }.onLeft {
-                    state = state.copy(fieldErrors = it)
                 }
         }
         state = state.copy(loading = false)

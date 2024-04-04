@@ -3,9 +3,7 @@ package com.milomobile.bathrooms4tp.data.model.bathroom_models
 import arrow.core.Either
 import com.google.firebase.firestore.DocumentSnapshot
 import com.milomobile.bathrooms4tp.data.adapter.FirestoreAdapter
-import com.milomobile.bathrooms4tp.data.exceptions.BathroomNecessaryDataMissingException
 import com.milomobile.bathrooms4tp.presentation.base.BaseError
-import com.milomobile.bathrooms4tp.util.baseLog
 
 class BathroomAdapter : FirestoreAdapter<Bathroom> {
     companion object {
@@ -35,16 +33,15 @@ class BathroomAdapter : FirestoreAdapter<Bathroom> {
                 }
             } ?: listOf()
 
-            //TODO: We should not be throwing this, we should be using left here to raise the error
             val address = Address(
                 street = rawAddress?.get(Address::street.name) as? String
-                    ?: throw BathroomNecessaryDataMissingException("Missing street property of bathroom"),
+                    ?: throw BaseError.AdapterError.NecessaryDataMissing("Missing street property of bathroom on document: ${document.id}"),
                 city = rawAddress[Address::city.name] as? String
-                    ?: throw BathroomNecessaryDataMissingException("Missing city property of bathroom"),
+                    ?: throw BaseError.AdapterError.NecessaryDataMissing("Missing city property of bathroom on document: ${document.id}"),
                 state = rawAddress[Address::state.name] as? String
-                    ?: throw BathroomNecessaryDataMissingException("Missing state property of bathroom"),
+                    ?: throw BaseError.AdapterError.NecessaryDataMissing("Missing state property of bathroom on document: ${document.id}"),
                 zipcode = (rawAddress[Address::zipcode.name] as? Long)
-                    ?: throw BathroomNecessaryDataMissingException("Missing zipcode property of bathroom"),
+                    ?: throw BaseError.AdapterError.NecessaryDataMissing("Missing zipcode property of bathroom on document: ${document.id}"),
                 coordinates = Coordinates(
                     first = rawCoordinates?.get(LATITUDE_FIELD) as? Double,
                     second = rawCoordinates?.get(LONGITUDE_FIELD) as? Double
@@ -60,15 +57,10 @@ class BathroomAdapter : FirestoreAdapter<Bathroom> {
                 notes = document.getString(Bathroom::notes.name)
             )
         }.mapLeft {
-            baseLog(message = "Exception caught when adapting document to bathroom model")
-            baseLog(message = "Exception message: ${it.message}")
             when (it) {
-                is BathroomNecessaryDataMissingException -> {
-                    BaseError.AdapterError.NecessaryDataMissing(it.message)
-                }
-                is ClassCastException -> {
+                is BaseError.AdapterError.NecessaryDataMissing -> it
+                is ClassCastException ->
                     BaseError.AdapterError.UnexpectedTypeCast(it.message ?: "Unable to cast field to expected data type")
-                }
                 else -> BaseError.AdapterError.UnknownExceptionCaught(it.message ?: "Unknown exception caught")
             }
         }

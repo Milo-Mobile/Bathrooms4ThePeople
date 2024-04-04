@@ -6,6 +6,8 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.milomobile.bathrooms4tp.data.model.bathroom_models.BathroomAdapter
 import com.milomobile.bathrooms4tp.data.model.bathroom_models.Bathrooms
 import com.milomobile.bathrooms4tp.presentation.base.BaseError
+import com.milomobile.bathrooms4tp.util.report
+import com.typesafe.config.ConfigException.Null
 import kotlinx.coroutines.tasks.await
 
 interface BathroomRepository {
@@ -27,7 +29,6 @@ class BathroomRepositoryImpl(
         const val GOOGLE_MAPS_QUERY = "geo:0,0?q="
     }
 
-    //TODO: Revisit Arrow usage here
     override suspend fun getBathrooms() : Either<BaseError, Bathrooms> =
         Either.catch {
             val result = firestore.collection(BATHROOM_COLLECTION).get().await()
@@ -35,15 +36,15 @@ class BathroomRepositoryImpl(
                 BathroomAdapter().documentToModel(documentSnapshot).getOrElse { adapterError ->
                     when (adapterError) {
                         is BaseError.AdapterError.NecessaryDataMissing -> {
-                            //TODO: Report the error message to analytics
+                            adapterError.report()
                             null
                         }
                         is BaseError.AdapterError.UnexpectedTypeCast -> {
-                            //TODO: Report the error message to analytics
+                            adapterError.report()
                             null
                         }
                         is BaseError.AdapterError.UnknownExceptionCaught -> {
-                            //TODO: Report the error message to analytics
+                            adapterError.report()
                             throw adapterError
                         }
                     }
@@ -60,6 +61,7 @@ class BathroomRepositoryImpl(
             firestore.collection(SUBMITTED_BATHROOM_COLLECTION).document().set(documentMap).await()
             Unit
         }.mapLeft {
+            it.report()
             BaseError.QueryError(
                 it.message ?: "Failed to submit bathroom, please check internet and try again."
             )

@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.jetbrainsKotlinAndroid)
     alias(libs.plugins.googleServices)
     id("com.google.devtools.ksp") version "1.9.23-1.0.19"
+    id("com.google.firebase.crashlytics")
 }
 
 android {
@@ -83,6 +84,8 @@ dependencies {
     //Firebase
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.firestore)
+    implementation(libs.firebase.analytics)
+    implementation(libs.firebase.crashlytics)
 
     //KTOR
     implementation(libs.ktor.core)
