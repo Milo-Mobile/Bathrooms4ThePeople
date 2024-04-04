@@ -17,4 +17,6 @@
     <string name="genders">Genders</string>
     <string name="rating">Rating</string>
     <string name="address">Address</string>
+    <string name="ok">OK</string>
+    <string name="location_permission_request">Location Permission Request</string>
 </resources>

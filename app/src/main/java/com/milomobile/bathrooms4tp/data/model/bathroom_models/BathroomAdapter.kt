@@ -35,6 +35,7 @@ class BathroomAdapter : FirestoreAdapter<Bathroom> {
                 }
             } ?: listOf()
 
+            //TODO: We should not be throwing this, we should be using left here to raise the error
             val address = Address(
                 street = rawAddress?.get(Address::street.name) as? String
                     ?: throw BathroomNecessaryDataMissingException("Missing street property of bathroom"),
@@ -72,9 +73,23 @@ class BathroomAdapter : FirestoreAdapter<Bathroom> {
             }
         }
 
-    override fun modelToDocument(model: Bathroom): Map<String, Any> {
-        //Apparently CloudFirestore supports writing documents with custom classes
-        // Investigate this later
-        TODO("Not yet implemented")
-    }
+    override fun modelToDocument(model: Bathroom): Either<BaseError.AdapterError, Map<String, Any?>> =
+        Either.catch {
+            mapOf(
+                Bathroom::address.name to mapOf(
+                    Address::street.name to model.address.street,
+                    Address::city.name to model.address.city,
+                    Address::state.name to model.address.state,
+                    Address::zipcode.name to model.address.zipcode,
+                    Address::coordinates.name to model.address.coordinates
+                ),
+                Bathroom::genders.name to model.genders,
+                Bathroom::imageUrl.name to model.imageUrl,
+                Bathroom::notes.name to model.notes,
+                Bathroom::operatingHours.name to model.operatingHours,
+                Bathroom::rating.name to model.rating,
+            )
+        }.mapLeft {
+            BaseError.AdapterError.UnknownExceptionCaught(it.message ?: "Foo")
+        }
 }
