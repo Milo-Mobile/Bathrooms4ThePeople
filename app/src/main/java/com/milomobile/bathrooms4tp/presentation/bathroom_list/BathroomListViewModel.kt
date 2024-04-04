@@ -28,7 +28,6 @@ class BathroomListViewModel(
         if (state.value.locationPermissionGranted) {
             setLoadingState(true)
             viewModelScope.launch {
-                //TODO: Grab location before making query
                 locationRepository.getUserLocation()
                 //Depending on how location comes back, we will get bathrooms
 

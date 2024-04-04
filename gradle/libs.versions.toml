@@ -64,6 +64,8 @@ ktor-cio = { module = "io.ktor:ktor-client-cio", version.ref = "ktor"  }
 #Firebase
 firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }
 firebase-firestore = { module = "com.google.firebase:firebase-firestore" }
+firebase-analytics = { module = "com.google.firebase:firebase-analytics" }
+firebase-crashlytics = { module = "com.google.firebase:firebase-crashlytics" }
 
 #Coil Image Loading
 coil = { module = "io.coil-kt:coil-compose", version.ref = "coil"}
