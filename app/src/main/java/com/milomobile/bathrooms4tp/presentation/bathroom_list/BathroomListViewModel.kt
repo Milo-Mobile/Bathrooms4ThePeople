@@ -28,9 +28,6 @@ class BathroomListViewModel(
         if (state.value.locationPermissionGranted) {
             setLoadingState(true)
             viewModelScope.launch {
-                locationRepository.getUserLocation()
-                //Depending on how location comes back, we will get bathrooms
-
                 bathroomRepository.getBathrooms()
                     .onLeft {
                         state.value = state.value.copy(uiError = it)
